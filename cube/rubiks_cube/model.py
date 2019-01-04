@@ -1,6 +1,6 @@
 from cube.move import Move
-from cube.component_cube.component_cube import ComponentCube
-from cube.component_cube.handler import ComponentCubeHandler
+from cube.component_cube.model import ComponentCubeModel
+from cube.component_cube.controller import ComponentCubeController
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -10,7 +10,7 @@ import os
 from itertools import product
 
 
-class RubiksCube():
+class RubiksCubeModel():
     def __init__(self, init_state):
         self.solved_orientation = {
             'f': 'f',
@@ -37,18 +37,18 @@ class RubiksCube():
             'g': 'r'
         }
 
-        self.cc_handler = ComponentCubeHandler()
+        self.cc_handler = ComponentCubeController()
 
         self.perfectly_solved_state = [
-            ComponentCube(position=[i, j, k],
-                          orientation=self.solved_orientation) \
+            ComponentCubeModel(position=[i, j, k],
+                               orientation=self.solved_orientation) \
             for i in range(3) \
             for j in range(3) \
             for k in range(3)
         ]
         self.uninitialised_state = [
-            ComponentCube(position=[i, j, k],
-                          orientation=self.uninitialed_orientation.copy()) \
+            ComponentCubeModel(position=[i, j, k],
+                               orientation=self.uninitialed_orientation.copy()) \
             for i in range(3) \
             for j in range(3) \
             for k in range(3)

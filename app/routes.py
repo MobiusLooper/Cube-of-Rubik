@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for
 from app import app
 from app.forms import CubeForm
-from cube.rubiks_cube.rubiks_cube import RubiksCube
+from cube.rubiks_cube.model import RubiksCubeModel
 import pickle
 import os
 
@@ -24,7 +24,7 @@ def solver():
                 pickle.dump(rc, f)
             return redirect(url_for('solver'))
     else:
-        rc = RubiksCube(init_state='uninitialised')
+        rc = RubiksCubeModel(init_state='uninitialised')
         with open(path, 'wb') as f:
             pickle.dump(rc, f)
         return redirect(url_for('solver'))

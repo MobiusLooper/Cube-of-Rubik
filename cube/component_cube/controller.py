@@ -1,9 +1,9 @@
 from cube.move import Move
-from cube.component_cube.component_cube import ComponentCube
+from cube.component_cube.model import ComponentCubeModel
 
 import numpy as np
 
-class ComponentCubeHandler():
+class ComponentCubeController():
     def __init__(self):
         self.rotation_mapping = {
             'x': {'f': 't', 't': 'k', 'k': 'b', 'b': 'f', 'l': 'l', 'r': 'r'},
@@ -27,17 +27,17 @@ class ComponentCubeHandler():
             'z': [0, 1]
         }
 
-    def make_move(self, cc: ComponentCube, move: Move):
+    def make_move(self, cc: ComponentCubeModel, move: Move):
         num_rotations = int(4 * move.rotation)
         assert num_rotations in [1, 2, 3]
         for i in range(num_rotations):
             self.get_new_orientation(cc, move)
             self.get_new_position(cc, move)
 
-    def get_new_orientation(self, cc: ComponentCube, move: Move):
+    def get_new_orientation(self, cc: ComponentCubeModel, move: Move):
         cc.orientation = {k: cc.orientation[v] for k, v in self.rotation_mapping[move.axis].items()}
 
-    def get_new_position(self, cc: ComponentCube, move: Move):
+    def get_new_position(self, cc: ComponentCubeModel, move: Move):
         position_copy = cc.position.copy()
         projection = self.projections[move.axis]
         projection_coords = [position_copy[projection[0]], position_copy[projection[1]]]
@@ -45,7 +45,7 @@ class ComponentCubeHandler():
         cc.position[projection[0]] = new_sub_positions[0]
         cc.position[projection[1]] = new_sub_positions[1]
 
-    def get_vertices(self, cc: ComponentCube, face, view, border_multiplier):
+    def get_vertices(self, cc: ComponentCubeModel, face, view, border_multiplier):
 
         bm = border_multiplier
 
