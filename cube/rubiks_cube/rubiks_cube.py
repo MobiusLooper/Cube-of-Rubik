@@ -1,5 +1,6 @@
-from app.classes.move import Move
-from app.classes.component_cube import ComponentCube
+from cube.move import Move
+from cube.component_cube.component_cube import ComponentCube
+from cube.component_cube.handler import ComponentCubeHandler
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -35,6 +36,8 @@ class RubiksCube():
             'o': 'b',
             'g': 'r'
         }
+
+        self.cc_handler = ComponentCubeHandler()
 
         self.perfectly_solved_state = [
             ComponentCube(position=[i, j, k],
@@ -89,7 +92,7 @@ class RubiksCube():
     def make_move(self, move: Move):
         for i in range(self.NUM_SMALL_CUBES):
             if self.state[i].position in self.get_cube_positions_to_move(move):
-                self.state[i].make_move(move)
+                self.cc_handler.make_move(self.state[i], move)
                 self.moves_log.append(move)
 
     def solve(self) -> list:
@@ -139,21 +142,21 @@ class RubiksCube():
 
         for i in range(3):
             for j in range(3):
-                vertices = self[0, i, j].get_vertices('l', 'primary', border_multiplier)
+                vertices = self.cc_handler.get_vertices(self[0, i, j], 'l', 'primary', border_multiplier)
                 polygon = Polygon(vertices)
                 patches.append(polygon)
                 colours.append(colourmap[self[0, i, j].orientation['l']] * 0.9)
 
         for i in range(3):
             for j in range(3):
-                vertices = self[i, 2, j].get_vertices('t', 'primary', border_multiplier)
+                vertices = self.cc_handler.get_vertices(self[i, 2, j], 't', 'primary', border_multiplier)
                 polygon = Polygon(vertices)
                 patches.append(polygon)
                 colours.append(colourmap[self[i, 2, j].orientation['t']])
 
         for i in range(3):
             for j in range(3):
-                vertices = self[i, j, 0].get_vertices('f', 'primary', border_multiplier)
+                vertices = self.cc_handler.get_vertices(self[i, j, 0], 'f', 'primary', border_multiplier)
                 polygon = Polygon(vertices)
                 patches.append(polygon)
                 colours.append(colourmap[self[i, j, 0].orientation['f']] * 0.95)
@@ -171,21 +174,21 @@ class RubiksCube():
 
         for i in range(3):
             for j in range(3):
-                vertices = self[2, i, j].get_vertices('r', 'secondary', border_multiplier)
+                vertices = self.cc_handler.get_vertices(self[2, i, j], 'r', 'secondary', border_multiplier)
                 polygon = Polygon(vertices)
                 patches.append(polygon)
                 colours.append(colourmap[self[2, i, j].orientation['r']] * 0.9)
 
         for i in range(3):
             for j in range(3):
-                vertices = self[i, 0, j].get_vertices('b', 'secondary', border_multiplier)
+                vertices = self.cc_handler.get_vertices(self[i, 0, j], 'b', 'secondary', border_multiplier)
                 polygon = Polygon(vertices)
                 patches.append(polygon)
                 colours.append(colourmap[self[i, 0, j].orientation['b']] * 0.8)
 
         for i in range(3):
             for j in range(3):
-                vertices = self[i, j, 2].get_vertices('k', 'secondary', border_multiplier)
+                vertices = self.cc_handler.get_vertices(self[i, j, 2], 'k', 'secondary', border_multiplier)
                 polygon = Polygon(vertices)
                 patches.append(polygon)
                 colours.append(colourmap[self[i, j, 2].orientation['k']])

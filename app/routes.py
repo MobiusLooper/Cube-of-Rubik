@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for
 from app import app
 from app.forms import CubeForm
-from app.classes.rubiks_cube import RubiksCube
+from cube.rubiks_cube.rubiks_cube import RubiksCube
 import pickle
 import os
 

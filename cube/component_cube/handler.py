@@ -27,25 +27,25 @@ class ComponentCubeHandler():
             'z': [0, 1]
         }
 
-    def make_move(self, move: Move, cc: ComponentCube):
+    def make_move(self, cc: ComponentCube, move: Move):
         num_rotations = int(4 * move.rotation)
         assert num_rotations in [1, 2, 3]
         for i in range(num_rotations):
-            self.get_new_orientation(move)
-            self.get_new_position(move)
+            self.get_new_orientation(cc, move)
+            self.get_new_position(cc, move)
 
-    def get_new_orientation(self, move: Move):
-        self.orientation = {k: self.orientation[v] for k, v in self.rotation_mapping[move.axis].items()}
+    def get_new_orientation(self, cc: ComponentCube, move: Move):
+        cc.orientation = {k: cc.orientation[v] for k, v in self.rotation_mapping[move.axis].items()}
 
-    def get_new_position(self, move: Move):
-        position_copy = self.position.copy()
+    def get_new_position(self, cc: ComponentCube, move: Move):
+        position_copy = cc.position.copy()
         projection = self.projections[move.axis]
         projection_coords = [position_copy[projection[0]], position_copy[projection[1]]]
         new_sub_positions = self.position_mapping[str(projection_coords)]
-        self.position[projection[0]] = new_sub_positions[0]
-        self.position[projection[1]] = new_sub_positions[1]
+        cc.position[projection[0]] = new_sub_positions[0]
+        cc.position[projection[1]] = new_sub_positions[1]
 
-    def get_vertices(self, face, view, border_multiplier):
+    def get_vertices(self, cc: ComponentCube, face, view, border_multiplier):
 
         bm = border_multiplier
 
@@ -56,20 +56,20 @@ class ComponentCubeHandler():
         if view == 'primary':
 
             if face == 'f':
-                bl_coords = [self.position[0] * x, self.position[1] * y, x * bm, y * bm]
-                tl_coords = [self.position[0] * x, (self.position[1] + 1) * y, x * bm, -y * bm]
-                tr_coords = [(self.position[0] + 1) * x, (self.position[1] + 1) * y, -x * bm, -y * bm]
-                br_coords = [(self.position[0] + 1) * x, self.position[1] * y, -x * bm, y * bm]
+                bl_coords = [cc.position[0] * x, cc.position[1] * y, x * bm, y * bm]
+                tl_coords = [cc.position[0] * x, (cc.position[1] + 1) * y, x * bm, -y * bm]
+                tr_coords = [(cc.position[0] + 1) * x, (cc.position[1] + 1) * y, -x * bm, -y * bm]
+                br_coords = [(cc.position[0] + 1) * x, cc.position[1] * y, -x * bm, y * bm]
             elif face == 't':
-                bl_coords = [self.position[0] * x, 3 * y, self.position[2] * z, x * bm, z * bm]
-                tl_coords = [self.position[0] * x, 3 * y, (self.position[2] + 1) * z, x * bm, -z * bm]
-                tr_coords = [(self.position[0] + 1) * x, 3 * y, (self.position[2] + 1) * z, -x * bm, -z * bm]
-                br_coords = [(self.position[0] + 1) * x, 3 * y, self.position[2] * z, -x * bm, z * bm]
+                bl_coords = [cc.position[0] * x, 3 * y, cc.position[2] * z, x * bm, z * bm]
+                tl_coords = [cc.position[0] * x, 3 * y, (cc.position[2] + 1) * z, x * bm, -z * bm]
+                tr_coords = [(cc.position[0] + 1) * x, 3 * y, (cc.position[2] + 1) * z, -x * bm, -z * bm]
+                br_coords = [(cc.position[0] + 1) * x, 3 * y, cc.position[2] * z, -x * bm, z * bm]
             elif face == 'l':
-                bl_coords = [self.position[1] * y, (self.position[2] + 1) * z, y * bm, -z * bm]
-                tl_coords = [(self.position[1] + 1) * y, (self.position[2] + 1) * z, -y * bm, -z * bm]
-                tr_coords = [(self.position[1] + 1) * y, self.position[2] * z, -y * bm, z * bm]
-                br_coords = [self.position[1] * y, self.position[2] * z, y * bm, z * bm]
+                bl_coords = [cc.position[1] * y, (cc.position[2] + 1) * z, y * bm, -z * bm]
+                tl_coords = [(cc.position[1] + 1) * y, (cc.position[2] + 1) * z, -y * bm, -z * bm]
+                tr_coords = [(cc.position[1] + 1) * y, cc.position[2] * z, -y * bm, z * bm]
+                br_coords = [cc.position[1] * y, cc.position[2] * z, y * bm, z * bm]
             else:
                 raise IndexError(f"Face '{face}' not valid with view '{view}'")
 
@@ -81,20 +81,20 @@ class ComponentCubeHandler():
             z = z * np.array([1, -1])
 
             if face == 'k':
-                bl_coords = [(2 - self.position[0]) * x, self.position[1] * y, x * bm, y * bm]
-                tl_coords = [(2 - self.position[0]) * x, (self.position[1] + 1) * y, x * bm, -y * bm]
-                tr_coords = [(3 - self.position[0]) * x, (self.position[1] + 1) * y, -x * bm, -y * bm]
-                br_coords = [(3 - self.position[0]) * x, self.position[1] * y, -x * bm, y * bm]
+                bl_coords = [(2 - cc.position[0]) * x, cc.position[1] * y, x * bm, y * bm]
+                tl_coords = [(2 - cc.position[0]) * x, (cc.position[1] + 1) * y, x * bm, -y * bm]
+                tr_coords = [(3 - cc.position[0]) * x, (cc.position[1] + 1) * y, -x * bm, -y * bm]
+                br_coords = [(3 - cc.position[0]) * x, cc.position[1] * y, -x * bm, y * bm]
             elif face == 'b':
-                bl_coords = [(2 - self.position[0]) * x, (3 - self.position[2]) * z, x * bm, -z * bm]
-                tl_coords = [(2 - self.position[0]) * x, (2 - self.position[2]) * z, x * bm, z * bm]
-                tr_coords = [(3 - self.position[0]) * x, (2 - self.position[2]) * z, -x * bm, z * bm]
-                br_coords = [(3 - self.position[0]) * x, (3 - self.position[2]) * z, -x * bm, -z * bm]
+                bl_coords = [(2 - cc.position[0]) * x, (3 - cc.position[2]) * z, x * bm, -z * bm]
+                tl_coords = [(2 - cc.position[0]) * x, (2 - cc.position[2]) * z, x * bm, z * bm]
+                tr_coords = [(3 - cc.position[0]) * x, (2 - cc.position[2]) * z, -x * bm, z * bm]
+                br_coords = [(3 - cc.position[0]) * x, (3 - cc.position[2]) * z, -x * bm, -z * bm]
             elif face == 'r':
-                bl_coords = [self.position[1] * y, (3 - self.position[2]) * z, y * bm, -z * bm]
-                tl_coords = [(self.position[1] + 1) * y, (3 - self.position[2]) * z, -y * bm, -z * bm]
-                tr_coords = [(self.position[1] + 1) * y, (2 - self.position[2]) * z, -y * bm, z * bm]
-                br_coords = [self.position[1] * y, (2 - self.position[2]) * z, y * bm, z * bm]
+                bl_coords = [cc.position[1] * y, (3 - cc.position[2]) * z, y * bm, -z * bm]
+                tr_coords = [(cc.position[1] + 1) * y, (2 - cc.position[2]) * z, -y * bm, z * bm]
+                tl_coords = [(cc.position[1] + 1) * y, (3 - cc.position[2]) * z, -y * bm, -z * bm]
+                br_coords = [cc.position[1] * y, (2 - cc.position[2]) * z, y * bm, z * bm]
             else:
                 raise IndexError(f"Face '{face}' not valid with view '{view}'")
 
