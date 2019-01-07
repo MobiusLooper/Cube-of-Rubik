@@ -1,8 +1,11 @@
-from cube.rubiks_cube.model import RubiksCubeModel
+from cube.rubiks_cube.functions import build_cube, save_cube
+from cube.rubiks_cube.controller import RubiksCubeController
 
 import numpy as np
 
-rc = RubiksCubeModel(init_state='uninitialised')
+rc = build_cube(signature='test', init='blank')
+controller = RubiksCubeController()
 
 for i in range(12):
-    rc.initialise_step(np.random.choice(['r', 'g', 'y', 'o', 'b', 'w']))
+    controller.initialise_step(rc, np.random.choice(['r', 'g', 'y', 'o', 'b', 'w']))
+    save_cube(rc)
