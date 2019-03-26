@@ -11,8 +11,8 @@ migrate = Migrate(app, db)
 
 from app import routes, models
 
-path_object = os.path.join('app', 'saved_states', 'state.pkl')
-path_image = os.path.join('app', 'static', 'saved_state_images', 'cube_state.svg')
+path_object = os.path.join('app', 'saved_states', 'state_test.pkl')
+path_image = os.path.join('app', 'static', 'saved_state_images', 'cube_state_test.svg')
 if os.path.exists(path_object):
     os.remove(path_object)
     os.remove(path_image)

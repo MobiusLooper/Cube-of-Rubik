@@ -1,7 +1,8 @@
 from flask import render_template, flash, redirect, url_for
 from app import app
 from app.forms import CubeForm
-from cube.rubiks_cube.model import RubiksCubeModel
+from cube.rubiks_cube.functions import build_cube, save_cube
+from cube.rubiks_cube.controller import RubiksCubeController
 import pickle
 import os
 
@@ -12,20 +13,13 @@ def index():
 
 @app.route('/solver', methods=['GET', 'POST'])
 def solver():
-    path = os.path.join('app', 'saved_states', 'state.pkl')
-    if os.path.exists(path):
-        with open(path, 'rb') as f:
-            rc = pickle.load(f)
-        form = CubeForm()
-        if form.validate_on_submit():
-            flash(f'Cube colour submitted {form.colour.data}')
-            rc.initialise_step(form.colour.data)
-            with open(path, 'wb') as f:
-                pickle.dump(rc, f)
-            return redirect(url_for('solver'))
-    else:
-        rc = RubiksCubeModel(init_state='uninitialised')
-        with open(path, 'wb') as f:
-            pickle.dump(rc, f)
+    rc = build_cube('test')
+    form = CubeForm()
+    if form.validate_on_submit():
+        flash(f'Cube colour submitted {form.colour.data}')
+        controller = RubiksCubeController()
+        controller.initialise_step(rc, form.colour.data)
+        save_cube(rc)
         return redirect(url_for('solver'))
-    return render_template('solver.html', title='Solver', form=form)
+    else:
+        return render_template('solver.html', title='Solver', form=form)
