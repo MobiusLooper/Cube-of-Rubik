@@ -41,23 +41,17 @@ BLANK_STATE = [
 ]
 
 controller = RubiksCubeController()
-view = RubiksCubeView()
 
 
-def build_cube(signature: str, init=False):
-    if init:
+def build_cube(signature: str):
+    path = os.path.join('app', 'saved_states', f'state_{signature}.pkl')
+    exists = os.path.exists(path)
+    if not exists:
         rc = RubiksCubeModel(signature=signature)
-        if init == 'blank':
-            rc.apply_state(BLANK_STATE)
-            controller.update_face(rc, [0, 0, 0], 'f', 'w')
-        elif init_state == 'randomise':
-            rc.apply_state(PERFECTLY_SOLVED_STATE)
-            controller.randomise(rc)
-        elif init_state == 'solved':
-            rc.apply_state(PERFECTLY_SOLVED_STATE)
+        rc.apply_state(BLANK_STATE)
+        controller.update_face(rc, [0, 0, 0], 'f', 'w')
 
     else:
-        path = os.path.join('app', 'saved_states', f'state_{signature}.pkl')
         with open(path, 'rb') as f:
             rc = pickle.load(f)
 
@@ -68,4 +62,5 @@ def save_cube(rc: RubiksCubeModel):
     path = os.path.join('app', 'saved_states', f'state_{rc.signature}.pkl')
     with open(path, 'wb') as f:
         pickle.dump(rc, f)
+    view = RubiksCubeView()
     view.record_state(rc)
