@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Solver</h1>
+    <h2>Input your cube status</h2>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            <img src="/static/saved_state_images/cube_state_test.svg" alt="Picture of cube" width="700" >
+        </p>
+        <p>
+            {{ form.colour.label }}<br>
+            {{ form.colour(size=32) }}<br>
+            {% for error in form.colour.errors %}
+            <span style="color: red;">[{{error}}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
